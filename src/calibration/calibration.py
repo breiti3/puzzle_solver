@@ -41,8 +41,7 @@ def calibrate(path):
     images = []
     for f in os.listdir(path):
         if os.path.isfile(os.path.join(path,f)):
-            if "calibration" in f and f.endswith(".png"):
-                images.append(os.path.join(path,f))
+            images.append(os.path.join(path,f))
 
     for image in images:    
         img = cv2.imread(image)
@@ -70,17 +69,18 @@ def calibrate(path):
     return cameraMatrix, dist, newCameraMatrix, roi
 
 
-def calibrateImages(path,cameraMatrix, dist, newCameraMatrix, roi):
+def calibrateImages(src_path,dst_path,cameraMatrix, dist, newCameraMatrix, roi):
     """ calibrate all images in path and store them"""
     images = []
-    for f in os.listdir(path):
-        if os.path.isfile(os.path.join(path,f)):
-            if f.endswith(".png") and "calibration" not in f and "calib" not in f:
-                images.append(os.path.join(path,f))
+    names = []
+    for f in os.listdir(src_path):
+        if os.path.isfile(os.path.join(src_path,f)):
+            images.append(os.path.join(src_path,f))
+            names.append(f)
     
-    for image,idx in zip(images,range(len(images))): 
+    for image,idx,name in zip(images,range(len(images)),names): 
         im = cv2.imread(image)
         dst = cv2.undistort(im, cameraMatrix, dist, None, newCameraMatrix)
         x, y, w, h = roi
         dst = dst[y:y+h, x:x+w+400]
-        cv2.imwrite(os.path.join(path,f"IM{idx}_calib.png"), dst)
+        cv2.imwrite(os.path.join(dst_path,f"{name}_calib.png"), dst)
