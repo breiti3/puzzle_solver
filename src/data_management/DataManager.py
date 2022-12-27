@@ -18,9 +18,8 @@ class DataManager():
         piecesList = []
         for f in os.listdir(path):
             if os.path.isfile(os.path.join(path,f)):
-                if f.endswith(".png") and f.startswith("IM"):
-                    imPath.append(path)
-                    imName.append(f)
+                imPath.append(path)
+                imName.append(f)
 
         for imp,imn in zip(imPath,imName):
             im = cv2.imread(os.path.join(imp,imn))
