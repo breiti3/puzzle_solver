@@ -41,7 +41,7 @@ class SinglePiece():
     def _findEdges(self,points,delta):
         (error,p) = calcErrorForEdges(points,delta)
         indexes, _ = scipy.signal.find_peaks(-error,distance=int(2*delta))
-        return refineEdges(p,delta,error,indexes)
+        return refineEdges(p,delta,error,indexes,points.shape[0])
 
 @jit(nopython=True,cache=True)
 def rotation_correction( points):
@@ -52,7 +52,7 @@ def rotation_correction( points):
     return points
 
 @jit(nopython=True,cache=True)
-def refineEdges(p,delta,error,indexes):
+def refineEdges(p,delta,error,indexes,n_points):
     error_ = error[indexes]
     sI_ = error_.argsort()    
 
@@ -65,7 +65,7 @@ def refineEdges(p,delta,error,indexes):
             idxOld = idx
             r = p[idx:idx+2*delta,0]**2+p[idx:idx+2*delta,1]**2
             edgeIdx[i] = idx + (np.argmax(r)-delta)
-        return edgeIdx
+        return edgeIdx % n_points
     else:
         [0]
 
