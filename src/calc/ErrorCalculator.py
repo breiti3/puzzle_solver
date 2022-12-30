@@ -1,7 +1,7 @@
 from calc.SinglePiece import SinglePiece
 import numpy as np
 from calc.PieceCompare import box_compare, type_compare, icp_compare
-
+import time
 
 
 
@@ -11,8 +11,19 @@ def calc_error_and_rot_mat(pieces:list[SinglePiece]):
     error = np.zeros((len(pieces)*4,len(pieces)*4))
     error[:] = np.inf
     transformMat = np.zeros((len(pieces)*4,len(pieces)*4,3,3))
+    print(f"Start calculating error matrix ...")
+    s = time.monotonic()
+    startTime = s
+    nIterations = (len(pieces)**2-len(pieces))/2
+    iterCnt=0
     for i in range(len(pieces)):
         for j in range(i+1,len(pieces)):
+            iterCnt += 1
+            if time.monotonic()-s > 5:
+                s = time.monotonic()
+                currentPercentage = 100/nIterations*iterCnt
+                speed = (currentPercentage)/(time.monotonic()-startTime) # percentage per time
+                print(f"{currentPercentage:.2f}% done. Remaining time estimation: {((100-currentPercentage)/speed)/60:.2f}min")
             error[4*i:4*i+4,4*j:4*j+4] = 0
             error[4*i:4*i+4,4*j:4*j+4] = type_compare(pieces[i],pieces[j])
             error[4*i:4*i+4,4*j:4*j+4] = box_compare(pieces[i],pieces[j],maxPixelDelta=18*2,matrix=error[4*i:4*i+4,4*j:4*j+4])#18 pixel is about 1mm
