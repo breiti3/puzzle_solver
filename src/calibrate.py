@@ -3,11 +3,11 @@ from calibration.calibration import calibrate, calibrateImages, croppImages
 import cv2
 
 
-CALIBRATION_PATH = os.path.join("C:",os.path.sep,"Users","TV","Pictures","Puzzel_3000_Pieces","Calibration_1")
-PICTURES_PATH = os.path.join("C:",os.path.sep,"Users","TV","Pictures","Puzzel_3000_Pieces","Pictures_1")
-CALIB_PICTURES_PATH = os.path.join("C:",os.path.sep,"Users","TV","Pictures","Puzzel_3000_Pieces","Calibrated_Pictures_1")
+CALIBRATION_PATH = os.path.join("C:",os.path.sep,"Users","TV","Pictures","Puzzel_3000_Pieces","Calibration_2")
+PICTURES_PATH = os.path.join("C:",os.path.sep,"Users","TV","Pictures","Puzzel_3000_Pieces","Pictures_2")
+CALIB_PICTURES_PATH = os.path.join("C:",os.path.sep,"Users","TV","Pictures","Puzzel_3000_Pieces","Calibrated_Pictures_2")
 
-WORKING_FOLDER = os.path.join("C:",os.path.sep,"Users","TV","Pictures","Puzzel_3000_Pieces","Processed_1")
+WORKING_FOLDER = os.path.join("C:",os.path.sep,"Users","TV","Pictures","Puzzel_3000_Pieces","Processed_2")
 
 def main():
     cropp_images()
@@ -17,10 +17,10 @@ def main():
 
 def cropp_images():
     # DEFINE ME
-    x = 4000-3336
-    y = 0
-    w = 3139
-    h = 3000
+    x = 4000-3269
+    y = 3000-2800
+    w = 2999
+    h = 2800
 
     try:
         os.mkdir(os.path.join(WORKING_FOLDER,"calib"))

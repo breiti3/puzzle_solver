@@ -36,7 +36,8 @@ class DataManager():
             for p,idx in zip(tmpPieces,range(len(tmpPieces))):
                 p.setIdx(idx)
             piecesList.extend(tmpPieces)
-
+            print(f"{len(tmpPieces)} loaded from {imn}")
+            
         return piecesList
 
     def loadPieces(self,path:str) -> list[SinglePiece]:
