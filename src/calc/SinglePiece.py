@@ -22,6 +22,7 @@ class SinglePiece():
         self.pictureSrcPath = pictureSrcPath
         self.pictureName = pictureName
         self.idx = 0
+        self.sideIdx = [0,0,0,0]
 
         if len(self.edgeIdx) == 4:
             self.valid = True
@@ -42,6 +43,11 @@ class SinglePiece():
         (error,p) = calcErrorForEdges(points,delta)
         indexes, _ = scipy.signal.find_peaks(-error,distance=int(2*delta))
         return refineEdges(p,delta,error,indexes,points.shape[0])
+
+def set_side_idx(self,side,idx):
+    if side > len(self.sideIdx):
+        return
+    self.sideIdx[side]=idx
 
 @jit(nopython=True,cache=True)
 def rotation_correction( points):
