@@ -6,13 +6,14 @@ from plot_helper.plot_helper import PlotPieces
 import matplotlib.pyplot as plt
 import pickle
 from calc.ErrorCalculator import calc_error_and_rot_mat
-
+import json
 
 PICKLE_PATH = os.path.join("C:",os.path.sep,"Users","ericb","Documents","Git_workspace","puzzle_bilder","firstRun")
 
 def main():
     piecesListPath = os.path.join(PICKLE_PATH,"pieces.pickle")
     errorDictPath = os.path.join(PICKLE_PATH,"error_dict.pickle")
+    exeptionListPath = os.path.join(PICKLE_PATH,"exeption_list.json")
     m = DataManager()
     plotter = PlotPieces()
     if os.path.exists(piecesListPath):
@@ -30,19 +31,32 @@ def main():
     else:
         print(f"No error matrix pickle found. Exit...")
         return
+
+    if os.path.exists(exeptionListPath):
+        with open(exeptionListPath,"r") as f:
+            data = json.load(f)
+        exeptionList = data["exeptionList"]
+    else:
+        exeptionList = []
     
 
-    solvePuzzle(pieces,error,transformMat)
+
+    solvePuzzle(pieces,error,transformMat,execptionList=exeptionList)
 
 
-def solvePuzzle(pieces,error,transformMat,treshold=3):
+
+def solvePuzzle(pieces,error,transformMat,treshold=3, execptionList=[]):
     np.set_printoptions(linewidth=300,precision=0)
 
     # init stuff
     clusterList:list[ClusterManager] = []
     e_ = error
 
-    e_values = e_[np.invert(np.isinf(e_))]
+    for i,j in execptionList:
+        e_[i,j] = np.inf
+        e_[j,i] = np.inf
+
+    # e_values = e_[np.invert(np.isinf(e_))]
     # counts, bins = np.histogram(e_values,100)
     # plt.stairs(counts, bins)
     # idx
@@ -120,7 +134,7 @@ def solvePuzzle(pieces,error,transformMat,treshold=3):
         plt.figure()
         transformInfo = c.generate_transformation_info(transformMat)
         for k,v in transformInfo.items():
-            plotter.transform_and_plot(v,pieces[k])
+            plotter.transform_and_plot(v,pieces[k],k)
 
 
     plt.axis('equal')
