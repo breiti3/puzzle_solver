@@ -24,13 +24,17 @@ class PlotPieces():
         for p,t in zip(src.normalized_sides,src.edgeType):
             plt.plot(p[:,0,0],p[:,0,1],colors[int((t+1)/2)])
 
-        plt.text(np.mean(src.normalized_points[:,0,0]),np.mean(src.normalized_points[:,0,1]),f"{src.pictureName}\n{src.idx}",size=5)
+        plt.text(np.mean(src.normalized_points[:,0,0]),np.mean(src.normalized_points[:,0,1]),f"{src.pictureName}\n{src.idx}",size=8)
 
 
-    def transform_and_plot(self,transform,piece:SinglePiece):
+    def transform_and_plot(self,transform,piece:SinglePiece, pieceIdx=0):
+        sideIdx= [np.mean(s,axis=0,keepdims=True)/2 for s in piece.normalized_sides]
+        sidePoints = [cv2.transform(s, transform[:2,:]) for s in sideIdx]
         tmp = cv2.transform(piece.normalized_points, transform[:2,:])
         plt.plot(tmp[:,0,0],tmp[:,0,1])
-        plt.text(np.mean(tmp[:,0,0]),np.mean(tmp[:,0,1]),f"{piece.pictureName}\n{piece.idx}",size=5)
+        for i in range(4):
+            plt.text(sidePoints[i][0,0,0],sidePoints[i][0,0,1],f"{pieceIdx*4+i}",size=8)
+        plt.text(np.mean(tmp[:,0,0]),np.mean(tmp[:,0,1]),f"{piece.pictureName}\n{piece.idx}",size=8)
 
     def rotate_and_plot(self,rotMat,rotHist,piece:SinglePiece):
         Tr = np.array([[1,0,0],[0,1,0],[0,0,1]])
@@ -42,7 +46,7 @@ class PlotPieces():
         tmp = cv2.transform(piece.normalized_points, Tr[:2,:])
 
         plt.plot(tmp[:,0,0],tmp[:,0,1])
-        plt.text(np.mean(tmp[:,0,0]),np.mean(tmp[:,0,1]),f"{piece.pictureName}\n{piece.idx}",size=5)
+        plt.text(np.mean(tmp[:,0,0]),np.mean(tmp[:,0,1]),f"{piece.pictureName}\n{piece.idx}",size=8)
 
 
 
