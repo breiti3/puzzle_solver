@@ -83,4 +83,4 @@ def calibrateImages(src_path,dst_path,cameraMatrix, dist, newCameraMatrix, roi):
         dst = cv2.undistort(im, cameraMatrix, dist, None, newCameraMatrix)
         x, y, w, h = roi
         # dst = dst[y:y+h, x:x+w]
-        cv2.imwrite(os.path.join(dst_path,f"{name}_calib.png"), dst)
+        cv2.imwrite(os.path.join(dst_path,f"{name.replace('.jpg','')}.png"), dst)
