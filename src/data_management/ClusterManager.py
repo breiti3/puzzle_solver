@@ -92,15 +92,19 @@ class ClusterManager():
             tmp_idx[0] = idx[0]+i
             tmp_idx[1] = idx[1]+j
             # is there a piece
-            if not np.isnan(self._pieceMatrix[tmp_idx[0],tmp_idx[1],PIECE_IDX_IDX]):
-                # was this already visited?
-                if not visited[tmp_idx[0],tmp_idx[1]]:
-                    dst_piece = int(self._pieceMatrix[idx[0],idx[1],PIECE_IDX_IDX])
-                    dst_side = int((nn-self._pieceMatrix[idx[0],idx[1],PIECE_ROT_IDX])%4)
-                    src_piece = int(self._pieceMatrix[tmp_idx[0],tmp_idx[1],PIECE_IDX_IDX])
-                    src_side = int((nn+2-self._pieceMatrix[tmp_idx[0],tmp_idx[1],PIECE_ROT_IDX])%4)
-                    transformHist.append(transformMat[dst_piece*4+dst_side,src_piece*4+src_side])
-                    out.update(self._generate_transformation_info(transformMat,transformHist,tmp_idx,visited))
+            if not np.isnan(self._pieceMatrix[tmp_idx[0],tmp_idx[1],PIECE_IDX_IDX]):  
+                # calculate pieces
+                dst_piece = int(self._pieceMatrix[idx[0],idx[1],PIECE_IDX_IDX])
+                dst_side = int((nn-self._pieceMatrix[idx[0],idx[1],PIECE_ROT_IDX])%4)
+                src_piece = int(self._pieceMatrix[tmp_idx[0],tmp_idx[1],PIECE_IDX_IDX])
+                src_side = int((nn+2-self._pieceMatrix[tmp_idx[0],tmp_idx[1],PIECE_ROT_IDX])%4)
+                # is there transformation information?
+                transInfo = transformMat[dst_piece*4+dst_side,src_piece*4+src_side]
+                if transInfo.max() != transInfo.min():
+                    # was this already visited?
+                    if not visited[tmp_idx[0],tmp_idx[1]]:
+                        transformHist.append(transInfo)
+                        out.update(self._generate_transformation_info(transformMat,transformHist,tmp_idx,visited))
         
         Tr = np.array([[1,0,0],[0,1,0],[0,0,1]])
         for Tr_ in reversed(transformHist):
