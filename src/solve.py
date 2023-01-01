@@ -8,7 +8,7 @@ import pickle
 from calc.ErrorCalculator import calc_error_and_rot_mat
 import json
 
-PICKLE_PATH = os.path.join("C:",os.path.sep,"Users","ericb","Documents","Git_workspace","puzzle_bilder","firstRun")
+PICKLE_PATH = os.path.join("C:",os.path.sep,"Users","ericb","Documents","Git_workspace","puzzle_bilder","secondRun")
 
 def main():
     piecesListPath = os.path.join(PICKLE_PATH,"pieces.pickle")
@@ -39,12 +39,12 @@ def main():
     else:
         exeptionList = []
     
-    for p in pieces:
-        plt.figure(p.pictureName)
-        plt.plot(p.points[:,0,0],p.points[:,0,1])
-        plt.text(np.mean(p.points[:,0,0]),np.mean(p.points[:,0,1]),f"{p.idx}",size=8)
-        plt.plot()
-    olvePuzzle(pieces,error,transformMat,execptionList=exeptionList)
+    # for p in pieces:
+    #     plt.figure(p.pictureName)
+    #     plt.plot(p.points[:,0,0],p.points[:,0,1])
+    #     plt.text(np.mean(p.points[:,0,0]),np.mean(p.points[:,0,1]),f"{p.idx}",size=8)
+    #     plt.plot()
+    solvePuzzle(pieces,error,transformMat,treshold=5,execptionList=exeptionList)
 
 
 def solvePuzzle(pieces,error,transformMat,treshold=3, execptionList=[]):
@@ -139,8 +139,10 @@ def solvePuzzle(pieces,error,transformMat,treshold=3, execptionList=[]):
             plotter.transform_and_plot(v,pieces[k],k)
 
 
+    print(f"From {len(pieces)} pieces, {sum([c.number_of_pieces for c in clusterList])} are in a connection")
     plt.axis('equal')
     plt.show()
+    pass
 
         
 
