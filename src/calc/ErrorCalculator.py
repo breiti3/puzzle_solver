@@ -26,7 +26,7 @@ def calc_error_and_rot_mat(pieces:list[SinglePiece]):
                 print(f"{currentPercentage:.2f}% done. Remaining time estimation: {((100-currentPercentage)/speed)/60:.2f}min")
             error[4*i:4*i+4,4*j:4*j+4] = 0
             error[4*i:4*i+4,4*j:4*j+4] = type_compare(pieces[i],pieces[j])
-            error[4*i:4*i+4,4*j:4*j+4] = box_compare(pieces[i],pieces[j],maxPixelDelta=18*2,matrix=error[4*i:4*i+4,4*j:4*j+4])#18 pixel is about 1mm
+            error[4*i:4*i+4,4*j:4*j+4] = box_compare(pieces[i],pieces[j],maxPixelDelta=18,matrix=error[4*i:4*i+4,4*j:4*j+4])#18 pixel is about 1mm
             error[4*i:4*i+4,4*j:4*j+4],transformMat[4*i:4*i+4,4*j:4*j+4,:,:] = icp_compare(pieces[i],pieces[j], maxError = 20,matrix=error[4*i:4*i+4,4*j:4*j+4])#18 pixel is about 1mm
 
     i_lower = np.tril_indices(error.shape[0], -1)
