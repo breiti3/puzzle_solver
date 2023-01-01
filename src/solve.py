@@ -39,10 +39,12 @@ def main():
     else:
         exeptionList = []
     
-
-
-    solvePuzzle(pieces,error,transformMat,execptionList=exeptionList)
-
+    for p in pieces:
+        plt.figure(p.pictureName)
+        plt.plot(p.points[:,0,0],p.points[:,0,1])
+        plt.text(np.mean(p.points[:,0,0]),np.mean(p.points[:,0,1]),f"{p.idx}",size=8)
+        plt.plot()
+    olvePuzzle(pieces,error,transformMat,execptionList=exeptionList)
 
 
 def solvePuzzle(pieces,error,transformMat,treshold=3, execptionList=[]):
