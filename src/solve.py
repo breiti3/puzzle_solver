@@ -9,11 +9,12 @@ from calc.ErrorCalculator import calc_error_and_rot_mat
 import json
 
 PICKLE_PATH = os.path.join("C:",os.path.sep,"Users","ericb","Documents","Git_workspace","puzzle_bilder","secondRun")
-
+MAX_NUMBER_OF_PLOTS = 4
 def main():
     piecesListPath = os.path.join(PICKLE_PATH,"pieces.pickle")
     errorDictPath = os.path.join(PICKLE_PATH,"error_dict.pickle")
     exeptionListPath = os.path.join(PICKLE_PATH,"exeption_list.json")
+    solved_listPath = os.path.join(PICKLE_PATH,"solved_list.json")
     m = DataManager()
     plotter = PlotPieces()
     if os.path.exists(piecesListPath):
@@ -38,17 +39,29 @@ def main():
         exeptionList = data["exeptionList"]
     else:
         exeptionList = []
+
+    if os.path.exists(solved_listPath):
+        with open(solved_listPath,"r") as f:
+            data = json.load(f)
+        solved_list = data["solved_list"]
+    else:
+        solved_list = []
+
     
-    # for p in pieces:
-    #     plt.figure(p.pictureName)
-    #     plt.plot(p.points[:,0,0],p.points[:,0,1])
-    #     plt.text(np.mean(p.points[:,0,0]),np.mean(p.points[:,0,1]),f"{p.idx}",size=8)
-    #     plt.plot()
-    solvePuzzle(pieces,error,transformMat,treshold=5,execptionList=exeptionList)
+    
+    for p in pieces:
+        plt.figure(p.pictureName)
+        plt.plot(p.points[:,0,0],p.points[:,0,1])
+        plt.text(np.mean(p.points[:,0,0]),np.mean(p.points[:,0,1]),f"{p.idx}",size=8)
+        plt.plot()
+    solvePuzzle(pieces,error,transformMat,treshold=4,execptionList=exeptionList,solved_list=solved_list)
 
 
-def solvePuzzle(pieces,error,transformMat,treshold=3, execptionList=[]):
+def solvePuzzle(pieces,error,transformMat,treshold=3, execptionList=[],solved_list=[]):
     np.set_printoptions(linewidth=300,precision=0)
+
+    solved_picture = [x[0] for x in solved_list]
+    solved_piece = [x[1] for x in solved_list]
 
     # init stuff
     clusterList:list[ClusterManager] = []
@@ -132,11 +145,29 @@ def solvePuzzle(pieces,error,transformMat,treshold=3, execptionList=[]):
 
     # plot the stuff
     plotter = PlotPieces()
+    # clusterList = sorted(clusterList,key=lambda x:x.number_of_pieces,reverse=True)
+    clusterList = sorted(clusterList,key=lambda x:x.number_of_pieces)
+    nplots = 0
     for c in clusterList:
         plt.figure()
-        transformInfo = c.generate_transformation_info(transformMat)
-        for k,v in transformInfo.items():
-            plotter.transform_and_plot(v,pieces[k],k)
+        allPiecesSolved = True
+        for p in c.piece_idx_list:
+            found = False
+            for piece_picture_name,piece_number in zip(solved_picture,solved_piece):
+                if ((int(pieces[p].pictureName.replace(".png","")) == piece_picture_name) and (pieces[p].idx == piece_number)):
+                    found = True
+                    break
+            if not found:
+                allPiecesSolved = False
+
+
+        if not allPiecesSolved:
+            nplots += 1
+            transformInfo = c.generate_transformation_info(transformMat)
+            for k,v in transformInfo.items():
+                plotter.transform_and_plot(v,pieces[k],k)
+            if nplots >= MAX_NUMBER_OF_PLOTS:
+                break
 
 
     print(f"From {len(pieces)} pieces, {sum([c.number_of_pieces for c in clusterList])} are in a connection")
