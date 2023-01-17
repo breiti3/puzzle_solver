@@ -7,8 +7,7 @@ from calc.ErrorCalculator import calc_error_and_rot_mat
 import matplotlib.pyplot as plt
 
 
-CALIB_PICTURES_PATH = os.path.join("C:",os.path.sep,"Users","TV","Pictures","Puzzel_3000_Pieces","Calibrated_Pictures_3")
-
+CALIB_PICTURES_PATH = os.path.join("C:",os.path.sep,"Users","ericb","Documents","Git_workspace","puzzle_bilder","secondRun")
 def main():
     path = CALIB_PICTURES_PATH
     piecesListPath = os.path.join(path,"pieces.pickle")
